@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulletin de Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        td input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+        }
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .mention {
+            font-size: 22px;
+            color: #ff5722;
+        }
+        .student-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .student-info img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .student-info div {
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+        .student-info input[type="file"] {
+            display: none;
+        }
+        .student-info label[for="student-photo-input"] {
+            cursor: pointer;
+            color: #4CAF50;
+            text-decoration: underline;
+        }
+        .total-coef, .final-grade {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .btn-print {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-print:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bulletin de Notes - Terminale</h1>
+
+        <div class="student-info">
+            <img src="https://via.placeholder.com/80" alt="Photo Élève" id="student-photo">
+            <input type="file" id="student-photo-input" accept="image/*" onchange="loadPhoto(event)">
+            <label for="student-photo-input">Changer la photo</label>
+            <div>
+                <label for="student-name">Nom de l'élève : </label>
+                <input type="text" id="student-name" value="">
+            </div>
+        </div>
+
+        <table id="grades-table">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Coefficient</th>
+                    <th>Note</th>
+                    <th>Coef * Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Mathématiques</td>
+                    <td><input type="number" value="4" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+                <tr>
+                    <td>Physique</td>
+                    <td><input type="number" value="3" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+                <tr>
+                    <td>Chimie</td>
+                    <td><input type="number" value="2" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+                <tr>
+                    <td>Français</td>
+                    <td><input type="number" value="3" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+                <tr>
+                    <td>Anglais</td>
+                    <td><input type="number" value="2" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+                <tr>
+                    <td>Informatique</td>
+                    <td><input type="number" value="3" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+                <tr>
+                    <td>Histoire-Géographie</td>
+                    <td><input type="number" value="2" min="0" step="1" class="coefficient"></td>
+                    <td><input type="number" value="0" min="0" max="20" step="0.1" class="note"></td>
+                    <td><input type="text" readonly class="coef-note"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total des Coefficients :</strong></td>
+                    <td><span id="total-coef">0</span></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>Total des Points :</strong></td>
+                    <td><span id="total-points">0</span></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        
+        
+        <div class="result">
+            <p id="average"></p>
+            <p id="mention" class="mention"></p>
+        </div>
+
+
+        <button class="btn-print" onclick="printBulletin()">Imprimer le Bulletin</button>
+    </div>
+
+    <script>
+        function calculate() {
+            let totalCoef = 0;
+            let totalCoefNote = 0;
+    
+            // Sélectionner toutes les lignes du tableau
+            const rows = document.querySelectorAll('#grades-table tbody tr');
+            rows.forEach(row => {
+                const coef = parseFloat(row.querySelector('.coefficient').value);
+                const note = parseFloat(row.querySelector('.note').value);
+                const coefNote = coef * note;
+                
+                // Mettre à jour la cellule Coef * Note
+                row.querySelector('.coef-note').value = coefNote.toFixed(2);
+    
+                totalCoef += coef;
+                totalCoefNote += coefNote;
+            });
+    
+            // Afficher la somme des coefficients et des points
+            document.getElementById('total-coef').textContent = totalCoef;
+            document.getElementById('total-points').textContent = totalCoefNote.toFixed(2);
+    
+            // Calculer la moyenne
+            const average = totalCoefNote / totalCoef;
+            document.getElementById('average').textContent = `Moyenne : ${average.toFixed(2)}`;
+    
+            // Déterminer la mention
+            let mention = '';
+            if (average >= 16) {
+                mention = 'Très bien';
+            } else if (average >= 14) {
+                mention = 'Bien';
+            } else if (average >= 12) {
+                mention = 'Assez bien';
+            } else if (average >= 10) {
+                mention = 'Passable';
+            } else {
+                mention = 'Médiocre';
+            }
+            document.getElementById('mention').textContent = `Mention : ${mention}`;
+    
+            // Afficher la note finale
+            document.getElementById('final-grade').textContent = average.toFixed(2);
+        }
+    
+        // Ajouter des événements pour chaque modification de note ou de coefficient
+        document.querySelectorAll('.note, .coefficient').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+    
+        // Calculer au chargement initial de la page
+        window.onload = calculate;
+
+        // Fonction pour imprimer le bulletin
+        function printBulletin() {
+            window.print();
+        }
+
+        // Fonction pour charger la photo de l'élève
+        function loadPhoto(event) {
+            const photo = document.getElementById('student-photo');
+            photo.src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>
